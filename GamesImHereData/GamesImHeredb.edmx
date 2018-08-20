@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="GamerTrafficModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Console">
+          <Key>
+            <PropertyRef Name="ConsoleId" />
+          </Key>
+          <Property Name="ConsoleId" Type="int" Nullable="false" />
+          <Property Name="ConsoleName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Statut" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'GamerTraffic.dbo.ConsoleGame' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ConsoleGame">
+          <Key>
+            <PropertyRef Name="GameId" />
+            <PropertyRef Name="ConsoleId" />
+          </Key>
+          <Property Name="GameId" Type="int" Nullable="false" />
+          <Property Name="ConsoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="GameId" />
+          </Key>
+          <Property Name="GameId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DateOfRelease" Type="date" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="GolbalNote" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="OwnerId" Type="int" Nullable="false" />
+          <Property Name="IsSold" Type="bit" Nullable="false" />
+          <Property Name="Rating" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="ConsoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Images">
+          <Key>
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="ImageId" Type="int" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="GameId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="idUser" />
+          </Key>
+          <Property Name="idUser" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Adresse" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="isAdmin" Type="bit" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="Mail" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ConsoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ConsoleGame_Console">
+          <End Role="Console" Type="Self.Console" Multiplicity="1" />
+          <End Role="ConsoleGame" Type="Self.ConsoleGame" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Console">
+              <PropertyRef Name="ConsoleId" />
+            </Principal>
+            <Dependent Role="ConsoleGame">
+              <PropertyRef Name="ConsoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConsoleGame_Games">
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="ConsoleGame" Type="Self.ConsoleGame" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="GameId" />
+            </Principal>
+            <Dependent Role="ConsoleGame">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="idUser" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="OwnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Images_Images">
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="Images" Type="Self.Images" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="GameId" />
+            </Principal>
+            <Dependent Role="Images">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GamerTrafficModelStoreContainer">
+          <EntitySet Name="Console" EntityType="Self.Console" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Games" EntityType="Self.Games" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Images" EntityType="Self.Images" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConsoleGame" EntityType="Self.ConsoleGame" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ConsoleGame].[GameId] AS [GameId], 
+    [ConsoleGame].[ConsoleId] AS [ConsoleId]
+    FROM [dbo].[ConsoleGame] AS [ConsoleGame]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ConsoleGame_Console" Association="Self.FK_ConsoleGame_Console">
+            <End Role="Console" EntitySet="Console" />
+            <End Role="ConsoleGame" EntitySet="ConsoleGame" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConsoleGame_Games" Association="Self.FK_ConsoleGame_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="ConsoleGame" EntitySet="ConsoleGame" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_User" Association="Self.FK_Games_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Images_Images" Association="Self.FK_Images_Images">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="Images" EntitySet="Images" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GamerTrafficModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Console">
+          <Key>
+            <PropertyRef Name="ConsoleId" />
+          </Key>
+          <Property Name="ConsoleId" Type="Int32" Nullable="false" />
+          <Property Name="ConsoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Statut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Games" Relationship="Self.ConsoleGame" FromRole="Console" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="GameId" />
+          </Key>
+          <Property Name="GameId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DateOfRelease" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="GolbalNote" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="OwnerId" Type="Int32" Nullable="false" />
+          <Property Name="IsSold" Type="Boolean" Nullable="false" />
+          <Property Name="Rating" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="ConsoleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Games_User" FromRole="Games" ToRole="User" />
+          <NavigationProperty Name="Images" Relationship="Self.FK_Images_Images" FromRole="Games" ToRole="Images" />
+          <NavigationProperty Name="Console" Relationship="Self.ConsoleGame" FromRole="Games" ToRole="Console" />
+        </EntityType>
+        <EntityType Name="Images">
+          <Key>
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="ImageId" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GameId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK_Images_Images" FromRole="Images" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="idUser" />
+          </Key>
+          <Property Name="idUser" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Adresse" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isAdmin" Type="Boolean" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="Mail" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ConsoleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK_Games_User" FromRole="User" ToRole="Games" />
+        </EntityType>
+        <Association Name="FK_Games_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="idUser" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="OwnerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Images_Images">
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="Images" Type="Self.Images" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="GameId" />
+            </Principal>
+            <Dependent Role="Images">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ConsoleGame">
+          <End Role="Console" Type="Self.Console" Multiplicity="*" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="GamesImHeredb" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Console" EntityType="Self.Console" />
+          <EntitySet Name="Games" EntityType="Self.Games" />
+          <EntitySet Name="Images" EntityType="Self.Images" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <AssociationSet Name="FK_Games_User" Association="Self.FK_Games_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Images_Images" Association="Self.FK_Images_Images">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="Images" EntitySet="Images" />
+          </AssociationSet>
+          <AssociationSet Name="ConsoleGame" Association="Self.ConsoleGame">
+            <End Role="Console" EntitySet="Console" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GamerTrafficModelStoreContainer" CdmEntityContainer="GamesImHeredb">
+          <EntitySetMapping Name="Console">
+            <EntityTypeMapping TypeName="GamerTrafficModel.Console">
+              <MappingFragment StoreEntitySet="Console">
+                <ScalarProperty Name="ConsoleId" ColumnName="ConsoleId" />
+                <ScalarProperty Name="ConsoleName" ColumnName="ConsoleName" />
+                <ScalarProperty Name="Statut" ColumnName="Statut" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="GamerTrafficModel.Games">
+              <MappingFragment StoreEntitySet="Games">
+                <ScalarProperty Name="GameId" ColumnName="GameId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DateOfRelease" ColumnName="DateOfRelease" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="GolbalNote" ColumnName="GolbalNote" />
+                <ScalarProperty Name="OwnerId" ColumnName="OwnerId" />
+                <ScalarProperty Name="IsSold" ColumnName="IsSold" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="ConsoleId" ColumnName="ConsoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Images">
+            <EntityTypeMapping TypeName="GamerTrafficModel.Images">
+              <MappingFragment StoreEntitySet="Images">
+                <ScalarProperty Name="ImageId" ColumnName="ImageId" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="GameId" ColumnName="GameId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="GamerTrafficModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="idUser" ColumnName="idUser" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Adresse" ColumnName="Adresse" />
+                <ScalarProperty Name="isAdmin" ColumnName="isAdmin" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="ConsoleId" ColumnName="ConsoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ConsoleGame" TypeName="GamerTrafficModel.ConsoleGame" StoreEntitySet="ConsoleGame">
+            <EndProperty Name="Console">
+              <ScalarProperty Name="ConsoleId" ColumnName="ConsoleId" />
+            </EndProperty>
+            <EndProperty Name="Games">
+              <ScalarProperty Name="GameId" ColumnName="GameId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
